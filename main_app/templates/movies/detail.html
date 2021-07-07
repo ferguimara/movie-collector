@@ -8,5 +8,9 @@
                     <p>Released: {{movie.release_year}}</p>
                     <p>Rating: {{movie.rating}}</p>
                 </div>
+                <div class="card-action">
+                    <a href="{% url 'movies_update' movie.id %}">Edit</a>
+                    <a href="{% url 'movies_delete' movie.id %}">Delete</a>
+                </div>
         </div>
 {% endblock%}
