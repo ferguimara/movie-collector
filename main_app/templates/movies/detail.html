@@ -1,16 +1,105 @@
 {% extends 'base.html' %}
 
-{% block content%}
-    <h1>Movies Details:</h1>
+{% block content %}
+<h1>Movie Details</h1>
+<div class="row">
+    <div class="col s6">
         <div class="card">
-                <div class="card-content">
-                    <span class="card-title">{{ movie.title }}</span>
-                    <p>Released: {{movie.release_year}}</p>
-                    <p>Rating: {{movie.rating}}</p>
-                </div>
-                <div class="card-action">
-                    <a href="{% url 'movies_update' movie.id %}">Edit</a>
-                    <a href="{% url 'movies_delete' movie.id %}">Delete</a>
-                </div>
+            <div class="card-content">
+                <span class="card-title">{{ movie.title }}</span>
+                <p>Released: {{movie.release_year}}</p>
+                <p>Rating: {{movie.rating}}</p>
+            </div>
+            <div class="card-action">
+                <a href="{% url 'movies_update' movie.id %}">Edit</a>
+                <a href="{% url 'movies_delete' movie.id %}">Delete</a>
+            </div>
         </div>
-{% endblock%}
+    </div>
+    <div class="col s6">
+        <form action="{% url 'add_review' movie.id %}" method="POST">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <input type="submit" class="btn" value="Submit Review">
+        </form>
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Date:</th>
+                    <th>Review:</th>
+                    <th>Score:</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in movie.review_set.all %}
+                <tr>
+                    <td>{{ review.date }}</td>
+                    <td>{{ review.review }}</td>
+                    <td>{{ review.get_score_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Markup for toys: -->
+<hr>
+<div class="row">
+    <div class="col s6">
+        <h3>{{ movie.title}}'s Cast</h3>
+        {% if movie.actors.count %}
+        {% for actor in movie.actors.all %}
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    {{ actor.name }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h5>No Cast</h5>
+        {% endif %}
+    </div>
+    <div class="col s6">
+        <h3>Available Cast:</h3>
+        {% if actors.count %}
+        {% for actor in actors.all%}
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    {{ actor.name }}
+                </span>
+            </div>
+            <div class="card-action">
+                <form action="{% url 'assoc_toy' cat.id toy.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">Add</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h5>Please Add Cast Members to Your Database</h5>
+        {% endif %}
+    </div>
+</div>
+<script>
+    //Constants:
+    const dateEl = document.getElementById('id_date');
+    const selectEl = document.getElementById('id_score');
+
+    //Configure the datepicker
+    M.Datepicker.init(dateEl, {
+        format: 'yyyy-mm-dd',
+        default: new Date(),
+        setDefault: true,
+        autoClose: true,
+    });
+
+    //Configure the select tag
+    M.FormSelect.init(selectEl);
+
+</script>
+
+{% endblock %}
