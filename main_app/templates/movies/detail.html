@@ -55,16 +55,22 @@
                     {{ actor.name }}
                 </span>
             </div>
+            <div class="card-action">
+                <form action="{% url 'delete_assoc_actor' movie.id actor.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn red">Delete</button>
+                </form>
+            </div>
         </div>
         {% endfor %}
         {% else %}
-        <h5>No Cast</h5>
+        <p>No Cast</p>
         {% endif %}
     </div>
     <div class="col s6">
         <h3>Available Cast:</h3>
         {% if actors.count %}
-        {% for actor in actors.all%}
+        {% for actor in actors.all %}
         <div class="card">
             <div class="card-content">
                 <span class="card-title">
@@ -72,7 +78,7 @@
                 </span>
             </div>
             <div class="card-action">
-                <form action="{% url 'assoc_toy' cat.id toy.id %}" method="post">
+                <form action="{% url 'assoc_actor' movie.id actor.id %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn">Add</button>
                 </form>
@@ -80,7 +86,7 @@
         </div>
         {% endfor %}
         {% else %}
-        <h5>Please Add Cast Members to Your Database</h5>
+        <p>Please Add Cast Members to Your Database</p>
         {% endif %}
     </div>
 </div>

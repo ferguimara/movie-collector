@@ -16,4 +16,17 @@
     </table>
     <input type="submit" value="Submit!" class="btn">
   </form>
+  <script>
+    //Constants:
+    const dateEl = document.getElementById('id_birthday');
+
+    //Configure the datepicker
+    M.Datepicker.init(dateEl, {
+        format: 'yyyy-mm-dd',
+        default: new Date(),
+        setDefault: true,
+        autoClose: true,
+    });
+
+</script>
 {% endblock %}

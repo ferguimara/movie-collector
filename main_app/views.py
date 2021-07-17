@@ -17,8 +17,10 @@ def movies_index(request):
 
 def movies_detail(request, movie_id):
     movie = Movie.objects.get(id=movie_id)
+    #get the actors the movie doesnt have
+    actors_movie_doesnt_have = Actor.objects.exclude(id__in = movie.actors.all().values_list('id'))
     review_form = ReviewForm()
-    return render(request, 'movies/detail.html', {'movie': movie, 'review_form': review_form})
+    return render(request, 'movies/detail.html', {'movie': movie, 'review_form': review_form, 'actors': actors_movie_doesnt_have})
 
 def add_review(request, movie_id):
     form=ReviewForm(request.POST)
@@ -30,7 +32,7 @@ def add_review(request, movie_id):
 
 class MovieCreate(CreateView):
     model=Movie
-    fields = '__all__'
+    fields = ['title', 'release_year', 'rating']
 
 class MovieUpdate(UpdateView):
     model = Movie
@@ -40,6 +42,14 @@ class MovieUpdate(UpdateView):
 class MovieDelete(DeleteView):
     model = Movie
     success_url = '/movies/'
+
+def assoc_actor(request, movie_id, actor_id):
+    Movie.objects.get(id=movie_id).actors.add(actor_id)
+    return redirect('detail', movie_id=movie_id)
+
+def assoc_actor_delete(request, movie_id, actor_id):
+    Movie.objects.get(id=movie_id).actors.remove(actor_id)
+    return redirect('detail', movie_id=movie_id)
 
 class ActorList(ListView):
   model = Actor
